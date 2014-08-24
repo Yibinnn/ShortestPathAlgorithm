@@ -25,7 +25,7 @@ public class MapChangeManager
 	}
 	public void addChangeEdge(int start,int end,int w)
 	{
-		addChangeEdge(new Edge(start, end, w));
+		addChangeEdge(new Edge(start, end, w,1));
 	}
 	public void randomChangeEdge(int changeNumber,String map)
 	{
@@ -35,7 +35,7 @@ public class MapChangeManager
 			Scanner s = new Scanner(new File(pathname));
 			for(int i=0;i<changeNumber;i++)
 			{
-				addChangeEdge(new Edge(s.nextInt(), s.nextInt(), s.nextInt()));
+				addChangeEdge(new Edge(s.nextInt(), s.nextInt(), s.nextInt(),1));
 			}
 		} catch (FileNotFoundException e)
 		{
@@ -69,7 +69,7 @@ public class MapChangeManager
 			List<Edge> temp = new ArrayList<Edge>();
 			while(s.hasNext())
 			{
-				Edge edge = new Edge(s.nextInt(), s.nextInt(), r.nextInt(s.nextInt()));
+				Edge edge = new Edge(s.nextInt(), s.nextInt(), r.nextInt(s.nextInt()),1);
 				temp.add(edge);
 			}
 			write(temp);

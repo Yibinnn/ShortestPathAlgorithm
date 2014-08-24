@@ -8,8 +8,10 @@ public interface Map extends Cloneable
 	int h(int start,int end);
 	int getStart();
 	int getGoal();
+	int getEdgeNum();
 	List<Edge> getNext(int s);
 	List<Edge> getPre(int s);
+	List<Edge> getAllEdge();
 	void change(Edge edge);	
 	//µÃµ½Î³¶È
 	 double getLat(int node);

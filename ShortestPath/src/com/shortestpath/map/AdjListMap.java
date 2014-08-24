@@ -21,15 +21,17 @@ public class AdjListMap implements Map
 //	public static final String coordinate_path = "F:\\论文以及开题\\图数据\\newyork\\USA-road-d.NY.co";
 //	public static  String path = "F:\\论文以及开题\\图数据\\USA-road-d.BAY.gr\\USA-road-d.BAY.gr";
 //	public static  String coordinate_path = "F:\\论文以及开题\\图数据\\USA-road-d.BAY.co\\USA-road-d.BAY.co";
-//	public static  String path = "F:\\论文以及开题\\图数据\\USA-road-d.NE.gr\\USA-road-d.NE.gr";
-//	public static  String coordinate_path = "F:\\论文以及开题\\图数据\\USA-road-d.NE.co\\USA-road-d.NE.co";
-	public static  String path = "F:\\论文以及开题\\图数据\\北京市地图\\edges.txt";
-	public static  String coordinate_path = "F:\\论文以及开题\\图数据\\北京市地图\\vertices.txt";
+	public static  String path = "F:\\论文以及开题\\图数据\\USA-road-d.NE.gr\\USA-road-d.NE.gr";
+	public static  String coordinate_path = "F:\\论文以及开题\\图数据\\USA-road-d.NE.co\\USA-road-d.NE.co";
+//	public static  String path = "F:\\论文以及开题\\图数据\\北京市地图\\edges.txt";
+//	public static  String coordinate_path = "F:\\论文以及开题\\图数据\\北京市地图\\vertices.txt";
 
 	public static int N = 171504;
+	public static int NUM_EDGE = 0;
 	public ArrayList<ArrayList<Edge>> nexts;
 	public ArrayList<ArrayList<Edge>> pres;
-	public HashMap<Edge,int[]> edgeFactors = new HashMap<Edge, int[]>();
+	public ArrayList<Edge> edges;
+
 	//保存点的坐标，用于估值函数
 	 double x[];
 	 double y[];
@@ -60,27 +62,16 @@ public class AdjListMap implements Map
 			nexts.add(new ArrayList<Edge>());
 			pres.add(new ArrayList<Edge>());
 		}
-		Random r = new Random();
 		while(s.hasNextInt())
 		{
 			int w = s.nextInt();
 			int a = s.nextInt()-1;
 			int b = s.nextInt()-1;
 
-			Edge e = new Edge(a, b, w);
+			Edge e = new Edge(a, b, w,1);
 			nexts.get(a).add(e);
 			pres.get(b).add(e);
-			int []edgeFactor = new int[600];
-			//随机生成边的影响系数
-			for(int i=0;i<600;i++)
-			{
-				int p = r.nextInt(600);
-				if(p<100)
-					edgeFactor[i] = r.nextInt(15)+1;
-				else
-					edgeFactor[i] = 1;
-			}
-			edgeFactors.put(e, edgeFactor);
+			edges.add(e);
 		}
 		//读取坐标
 		x = new double[N];
@@ -200,6 +191,16 @@ public class AdjListMap implements Map
 			e.printStackTrace();
 		}
 		return null;
+	}
+	@Override
+	public int getEdgeNum() {
+		// TODO Auto-generated method stub
+		return NUM_EDGE;
+	}
+	@Override
+	public List<Edge> getAllEdge() {
+		// TODO Auto-generated method stub
+		return edges;
 	}
 	
 	
