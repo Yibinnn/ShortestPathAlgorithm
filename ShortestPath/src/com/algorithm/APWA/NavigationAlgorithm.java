@@ -5,6 +5,6 @@ import java.util.List;
 import com.shortestpath.map.Edge;
 
 public interface NavigationAlgorithm {
-	public boolean isDone();
-	public List<Edge> getNewPath();
+	public WDStarResult getNewPath();
+	public void setOtherParamter(int start,int end,int timeLimit,List<Edge> changeEdges);
 }

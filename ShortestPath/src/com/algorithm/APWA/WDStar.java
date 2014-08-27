@@ -2,6 +2,7 @@ package com.algorithm.APWA;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import com.algorithm.common.Calc;
 import com.algorithm.common.ThreadControl;
@@ -17,19 +18,22 @@ import com.shortestpath.map.MapChangeManager;
  * @author simin
  *
  */
-public class WDStar extends ShortestBasic<Key>
+public class WDStar extends ShortestBasic<Key> implements Callable<WDStarResult>
 {
 
 	int rhs[];
-	MapChangeManager mcm;// 地图变化管理器
+	int info_w[];
+	int info_ri[];
 	double epsilon;
+	List<Edge> changeEdges;
 	//起点问题，实际用中 起点不停变化
-	public WDStar(Map map, MapChangeManager mcm,double epsilon)
+	public WDStar(Map map,double epsilon)
 	{
-		super(map,"D*");
-		this.mcm = mcm;
+		super(map,"WD*");
 		int n = map.getN();// 节点个数
 		rhs = new int[n];
+		info_w = new int[n];
+		info_ri = new int[n];
 		for (int i = 0; i < n; i++)
 		{
 			rhs[i] = INFINITY;
@@ -59,14 +63,16 @@ public class WDStar extends ShortestBasic<Key>
 		{
 			g[s] = INFINITY;
 		}
-		if (s != goal)
+		if (s!=goal)
 		{
 			for (Edge temp : map.getNext(s))
 			{
-				int t = Calc.add(g[temp.e], temp.w);
+				int t = Calc.add(g[temp.e], temp.w*temp.ri);
 				if (t < rhs[s])
 				{
 					path[s] = temp.e;
+					info_w[s] = temp.w;
+					info_ri[s] = temp.ri;
 					rhs[s] = t;
 				}
 			}
@@ -75,7 +81,6 @@ public class WDStar extends ShortestBasic<Key>
 		que.remove(new Key(s));
 		if (rhs[s] != g[s])
 		{
-			k++;
 			que.add(getKey(s));
 		}
 	}
@@ -86,7 +91,7 @@ public class WDStar extends ShortestBasic<Key>
 		{
 			Key temp = que.poll();
 			int s = temp.s;
-
+			
 			// 判断是否需要扩展,如果当前key已经比start的key还要大了,就没有扩展必要了
 			if (comp(temp, getKey(start)) >= 0)
 			{
@@ -118,18 +123,6 @@ public class WDStar extends ShortestBasic<Key>
 	}
 
 	@Override
-	public int getStartPoint()
-	{
-		return map.getStart();
-	}
-
-	@Override
-	public int getEndPoint()
-	{
-		return map.getGoal();
-	}
-
-	@Override
 	public void init()
 	{
 		g[start] = rhs[start] = INFINITY;
@@ -138,53 +131,54 @@ public class WDStar extends ShortestBasic<Key>
 		que.add(getKey(goal));
 	}
 
-	@Override
-	public void mainLoop()
-	{
-		while (true)
-		{		
-			computeShortestPath();
-			printPath(start);
-			System.out.println("k="+k);
-			//边的改变
-			if(!hasMapChange())
-			{
-				System.out.println("图没有改变");
-				ThreadControl.sleep(10000);
-			}
-		}
-	}
-
-	boolean hasMapChange()
-	{
-		List<Edge> temp = mcm.getChangeEdge();//获得改变的边
-		List<Edge> changeEdges;
-		synchronized (temp)
-		{
-			if (temp.size() == 0)
-				return false;
-			changeEdges = new ArrayList<Edge>(temp);
-			temp.clear();
-		}
 	
+
+	void mapChange()
+	{
 		for (Edge e : changeEdges)
 		{
 			map.change(e);
-		
 			UpdateState(e.s);
 		}
-		changeEdges.clear();
-		return true;
 	}
 	
-	int k=0;
-	public static void main(String[] args)
+	public void setOtherParamter(int start,List<Edge> changeEdges)
 	{
-		AdjListMap map = new AdjListMap();
-		MapChangeManager mcm = new MapChangeManager();
-		WDStar d = new WDStar(map, mcm,1.0);
-//		mcm.randomChangeEdge(10,"BJ");
-		d.run();
+		this.start = start;
+		this.changeEdges = changeEdges;
 	}
+	@Override
+	public WDStarResult call() throws Exception {
+		mapChange();
+		computeShortestPath();
+		return new WDStarResult(path,info_w,info_ri);
+	}
+
+	@Override
+	public int getStartPoint() {
+		return map.getStart();
+	}
+
+	@Override
+	public int getEndPoint() {
+		return map.getGoal();
+	}
+
+	@Override
+	public void mainLoop() {
+		//unnecessary
+	}
+	
+//	int k=0;
+//	public static void main(String[] args)
+//	{
+//		AdjListMap map = new AdjListMap();
+//		MapChangeManager mcm = new MapChangeManager();
+//		WDStar d = new WDStar(map, mcm,1.0);
+//		mcm.randomChangeEdge(10,"BJ");
+//		d.run();
+//	}
+
+	
 }
 

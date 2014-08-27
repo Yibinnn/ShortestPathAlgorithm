@@ -1,4 +1,5 @@
-package 为批量任务设定时限;
+package com.algorithm.APWA;
+
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,11 +15,11 @@ public class BatchTaskWithTimeLimit {
 	public static void main(String[] args) {
 		ExecutorService exec = Executors.newFixedThreadPool(4);
 		List<Task> tasks = new ArrayList<Task> (); 
-		tasks.add(new Task(2000));
+		tasks.add(new Task(20000));
 		tasks.add(new Task(100));
 		List<Future<TaskResult>> results = null;
 		try {
-			 results = exec.invokeAll(tasks, 1000, TimeUnit.MILLISECONDS);
+			 results = exec.invokeAll(tasks, 10000, TimeUnit.MILLISECONDS);
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

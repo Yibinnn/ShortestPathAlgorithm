@@ -8,6 +8,8 @@ public interface Map extends Cloneable
 	int h(int start,int end);
 	int getStart();
 	int getGoal();
+	void setStart(int start);
+	void setGoal(int goal);
 	int getEdgeNum();
 	List<Edge> getNext(int s);
 	List<Edge> getPre(int s);

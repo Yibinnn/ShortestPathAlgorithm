@@ -7,18 +7,20 @@ import java.util.Random;
 
 import javax.swing.ListModel;
 
+import com.shortestpath.map.AdjListMap;
 import com.shortestpath.map.Edge;
 import com.shortestpath.map.Map;
 
 public class NavigationTestSystem {
 	int start,end,speed;
 	int time=0;
-	List<Edge> drivePath;
+	WDStarResult drivePath;
 	NavigationAlgorithm na;
 	Map map;
 	int distance=0;
 	int w_distance=0;
 	static Random r = new Random();
+	List<Edge> changeEdges = new ArrayList<Edge>();
 	public NavigationTestSystem(int start,int end,int speed,NavigationAlgorithm na,Map map)
 	{
 		this.start = start;
@@ -30,15 +32,18 @@ public class NavigationTestSystem {
 	
 	public void changeRoadImpedance()
 	{
+		changeEdges.clear();
 		List<Edge> allEdges = map.getAllEdge();
 		for(Edge e:allEdges)
 		{
+			int t=1;
 			if(r.nextInt(600)<100)
 			{
-				e.ri=r.nextInt(15)+1;
-			}else
+				t=r.nextInt(15)+1;
+			}
+			if(t==e.ri)
 			{
-				e.ri=1;
+				changeEdges.add(e);
 			}
 		}
 	}
@@ -48,18 +53,25 @@ public class NavigationTestSystem {
 		drivePath = na.getNewPath();
 		while(start!=end)
 		{
-			Edge e = drivePath.remove(0);
-			distance+=e.w;
-			w_distance+=e.w*e.ri;
-			start = e.e;
-			int limit_time = (e.w*e.ri*3600)/(speed);
+			int w = drivePath.info_w[start];
+			int ww = drivePath.info_w[start]*drivePath.info_ri[start];
+			distance+=w;
+			w_distance+=ww;
+			start = drivePath.path[start];
+			int limit_time = (ww*3600)/(speed);
 			changeRoadImpedance();
+			na.setOtherParamter(this.start, this.end, limit_time, this.changeEdges);
+			WDStarResult t = na.getNewPath();
+			if(t!=null)
+				drivePath=t;
 		}
 	}
 	
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		AdjListMap map = new AdjListMap("F:\\论文以及开题\\图数据\\USA-road-d.NE.gr\\USA-road-d.NE.gr","F:\\论文以及开题\\图数据\\USA-road-d.NE.co\\USA-road-d.NE.co");
+		NavigationAlgorithm na  = new APWA(map);
+		NavigationTestSystem ns = new NavigationTestSystem(0, 100, 40, na, map);
+		ns.simulation();
 	}
 
 }
