@@ -26,15 +26,15 @@ public class AdjListMap implements Map
 //	public static  String path = "F:\\论文以及开题\\图数据\\北京市地图\\edges.txt";
 //	public static  String coordinate_path = "F:\\论文以及开题\\图数据\\北京市地图\\vertices.txt";
 
-	public static int N = 171504;
+	public static int N = 0;
 	public static int NUM_EDGE = 0;
 	public ArrayList<ArrayList<Edge>> nexts;
 	public ArrayList<ArrayList<Edge>> pres;
 	public ArrayList<Edge> edges;
 
 	//保存点的坐标，用于估值函数
-	 double x[];
-	 double y[];
+	int x[];
+ 	int y[];	
 	int start;
 	int goal;
 	
@@ -54,9 +54,10 @@ public class AdjListMap implements Map
 		{
 			e.printStackTrace();
 		}
-		
+		N = s.nextInt();
 		nexts = new ArrayList<ArrayList<Edge>>(N);
 		pres = new ArrayList<ArrayList<Edge>>(N);
+		edges = new ArrayList<Edge>();
 		for(int i=0;i<N;i++)
 		{
 			nexts.add(new ArrayList<Edge>());
@@ -74,8 +75,8 @@ public class AdjListMap implements Map
 			edges.add(e);
 		}
 		//读取坐标
-		x = new double[N];
-		y = new double[N];
+		x = new int[N];
+		y = new int[N];
 		try
 		{
 			s = new Scanner(new File(coordinate_path));
@@ -86,13 +87,9 @@ public class AdjListMap implements Map
 		while(s.hasNextInt())
 		{
 			int node = s.nextInt()-1;
-			x[node] = s.nextDouble();
-			y[node] = s.nextDouble();
+			x[node] = s.nextInt();
+			y[node] = s.nextInt();
 		}
-//		this.start=0;
-//		this.goal=171503;
-		this.start=59300;
-		this.goal=117598;
 		long time2 = System.currentTimeMillis();
 		System.out.println(time2-time);
 	}
@@ -114,10 +111,10 @@ public class AdjListMap implements Map
 	@Override
 	public int h(int start, int end)
 	{
-//		return 0;
-		
-		double a = x[start]-x[end];
-		double b = y[start]-y[end];
+		return 0;
+		/*
+		int a = x[start]-x[end];
+		int b = y[start]-y[end];
 		BigInteger t1 = new BigInteger(String.valueOf(a));
 		t1 = t1.multiply(t1);
 		BigInteger t2 = new BigInteger(String.valueOf(b));
@@ -125,7 +122,7 @@ public class AdjListMap implements Map
 		t1 = t1.add(t2);
 		double temp = Math.sqrt(t1.doubleValue());
 		return  (int) temp;
-//		
+		*/
 	}
 
 	@Override

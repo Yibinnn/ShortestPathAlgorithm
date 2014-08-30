@@ -53,13 +53,13 @@ public class AStar extends ShortestBasic<SimpleKey>
 	@Override
 	public int getStartPoint()
 	{
-		return map.getStart();
+		return 1;
 	}
 
 	@Override
 	public int getEndPoint()
 	{
-		return map.getGoal();
+		return 1002;
 	}
 
 	@Override

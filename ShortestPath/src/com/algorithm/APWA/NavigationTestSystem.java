@@ -50,27 +50,33 @@ public class NavigationTestSystem {
 	public void simulation()
 	{
 		//得到初始化路径
+		na.setOtherParamter(this.start, this.end, Integer.MAX_VALUE, this.changeEdges);
 		drivePath = na.getNewPath();
 		while(start!=end)
 		{
+			System.out.println(start);
 			int w = drivePath.info_w[start];
 			int ww = drivePath.info_w[start]*drivePath.info_ri[start];
 			distance+=w;
 			w_distance+=ww;
 			start = drivePath.path[start];
-			int limit_time = (ww*3600)/(speed);
+			System.out.println(start);
+			int limit_time = (ww*60)/(speed);
 			changeRoadImpedance();
 			na.setOtherParamter(this.start, this.end, limit_time, this.changeEdges);
 			WDStarResult t = na.getNewPath();
 			if(t!=null)
 				drivePath=t;
 		}
+		System.out.println("over");
 	}
 	
 	public static void main(String[] args) {
 		AdjListMap map = new AdjListMap("F:\\论文以及开题\\图数据\\USA-road-d.NE.gr\\USA-road-d.NE.gr","F:\\论文以及开题\\图数据\\USA-road-d.NE.co\\USA-road-d.NE.co");
+		map.setStart(1);
+		map.setGoal(1002);
 		NavigationAlgorithm na  = new APWA(map);
-		NavigationTestSystem ns = new NavigationTestSystem(0, 100, 40, na, map);
+		NavigationTestSystem ns = new NavigationTestSystem(1, 1002, 40, na, map);
 		ns.simulation();
 	}
 

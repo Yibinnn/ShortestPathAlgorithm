@@ -19,12 +19,13 @@ import com.shortestpath.map.MapChangeManager;
  */
 public class APWA implements NavigationAlgorithm{
 
-	public static final int NUM_THREAD = 4;
+	public static final int NUM_THREAD = 1;
 	public static final double []epsilons = new double []{4.0,2.5,1.5,1.0};
 	ExecutorService exec;
 	Map map;
 	List<WDStar> algorithmInstances;
-	int start,end,timeLimit;
+	int start,end;
+	int timeLimit;
 	List<Edge> changeEdges;
 	public APWA(Map map)
 	{
@@ -34,8 +35,9 @@ public class APWA implements NavigationAlgorithm{
 		algorithmInstances = new ArrayList<WDStar>();
 		for(int i=0;i<epsilons.length;i++)
 		{
-			WDStar instance = new WDStar(map, epsilons[i]);
+			WDStar instance = new WDStar(map, epsilons[i],map.getStart(),map.getGoal());
 			instance.init();
+			algorithmInstances.add(instance);
 		}
 	}
 	public void setOtherParamter(int start,int end,int timeLimit,List<Edge> changeEdges)
@@ -55,7 +57,7 @@ public class APWA implements NavigationAlgorithm{
 		WDStarResult result=null;
 		List<Future<WDStarResult>> results = null;
 		try {
-			results = exec.invokeAll(algorithmInstances,timeLimit,TimeUnit.MILLISECONDS);
+			results = exec.invokeAll(algorithmInstances,timeLimit,TimeUnit.SECONDS);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

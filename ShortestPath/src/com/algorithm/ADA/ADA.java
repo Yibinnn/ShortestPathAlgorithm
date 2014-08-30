@@ -119,6 +119,8 @@ public class ADA extends ShortestBasic<Key>
 				}
 			}
 			*/
+			if(visited[s])
+				System.out.println("²âÊÔ~");
 			visited[s] = true; // ÒÑ¾­·ÃÎÊs
 			if (g[s] > rhs[s])
 			{

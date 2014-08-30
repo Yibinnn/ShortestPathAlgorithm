@@ -27,7 +27,7 @@ public class WDStar extends ShortestBasic<Key> implements Callable<WDStarResult>
 	double epsilon;
 	List<Edge> changeEdges;
 	//起点问题，实际用中 起点不停变化
-	public WDStar(Map map,double epsilon)
+	public WDStar(Map map,double epsilon,int start,int goal)
 	{
 		super(map,"WD*");
 		int n = map.getN();// 节点个数
@@ -39,6 +39,8 @@ public class WDStar extends ShortestBasic<Key> implements Callable<WDStarResult>
 			rhs[i] = INFINITY;
 		}
 		this.epsilon = epsilon;
+		this.start = start;
+		this.goal = goal;
 	}
 
 	public int comp(Key k1, Key k2)
@@ -53,6 +55,7 @@ public class WDStar extends ShortestBasic<Key> implements Callable<WDStarResult>
 	{
 		int a, b;
 		b = Calc.min(g[s], rhs[s]);
+		
 		a = Calc.add(b, (int)(epsilon*map.h(start, s)));
 		return new Key(s, a, b);
 	}
@@ -101,6 +104,8 @@ public class WDStar extends ShortestBasic<Key> implements Callable<WDStarResult>
 					break;
 				}
 			}
+			if(visited[s])
+				System.out.println("已经访问过了"+s);
 			visited[s] = true; // 已经访问s
 			if (g[s] > rhs[s])
 			{
@@ -120,6 +125,7 @@ public class WDStar extends ShortestBasic<Key> implements Callable<WDStarResult>
 				UpdateState(s);
 			}
 		}
+		System.out.println("quit");
 	}
 
 	@Override
